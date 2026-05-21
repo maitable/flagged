@@ -42,4 +42,11 @@ def load(path:Path) -> Writeup:
 #post['key'] will raise keyerror if missing (required)
 #post.get('key', default) if they are optional
 
+def save(writeup:Writeup) -> None:
+    post = frontmatter.load(writeup.path)
+    post['solved'] = writeup.solved
+    post["flag"] = writeup.flag
+    with open(writeup.path, "wb") as f:
+        frontmatter.dump(post, f)
+
 
