@@ -1,6 +1,6 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date
-from pathlib import path
+from pathlib import Path
 import frontmatter
 
 @dataclass
@@ -30,7 +30,7 @@ def load(path:Path) -> Writeup:
         category = post["category"],
         date = post["date"],
         solved = post.get('solved',False),
-        flag = post.get("flag", 0),
+        flag = post.get("flag", ""),
         points = post.get("points", 0),
         difficulty = post.get("difficulty", ""),
         tags = post.get("tags", []),
@@ -38,5 +38,8 @@ def load(path:Path) -> Writeup:
         slug=path.stem,
         content=post.content,
     )
+
+#post['key'] will raise keyerror if missing (required)
+#post.get('key', default) if they are optional
 
 
