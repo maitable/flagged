@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+
+[project]
+name="flagged"
+version="0.0.0"
+requires-python=">=3.11"
+
+dependencies = [
+  "typer>=0.12",
+  "rich>=13",
+  "python-frontmatter>=1.1",
+]
+
+[project.scripts]
+flagged = "flagged.cli:app"
+# run object app inside flagged.cli module when flagged called
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/flagged"]
+
+
