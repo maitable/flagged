@@ -1,5 +1,6 @@
 [build-system]
 requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name="flagged"
@@ -13,6 +14,7 @@ dependencies = [
 ]
 
 [project.scripts]
+
 flagged = "flagged.cli:app"
 # run object app inside flagged.cli module when flagged called
 
