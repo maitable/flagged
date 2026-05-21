@@ -49,4 +49,13 @@ def save(writeup:Writeup) -> None:
     with open(writeup.path, "wb") as f:
         frontmatter.dump(post, f)
 
+def list_all(vault: Path) -> list[Writeup]:
+    writeups = []
+    for p in vault.rglob("*.md"):
+        try:
+            writeups.append(load(p))
+        except KeyError:
+            print(f"Skipping ctf {p.name} because missing needed fields")
+    return sorted(writeups, key=lambda w: w.date, reverse=True) #date filter
+
 
