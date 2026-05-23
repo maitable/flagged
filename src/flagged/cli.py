@@ -37,7 +37,7 @@ def new():
     writeup_path.parent.mkdir(parents = True, exist_ok = True)
 
     tags_list = [t.strip() for t in tags.split(",") if t.strip()]
-    template = f"""
+    template = f"""---
 title: {name}
 ctf: {ctf}
 category: {category}
@@ -60,5 +60,20 @@ tags: {tags_list}
 
     editor = __import__("os").environ.get("EDITOR", "nano")
     __import__("os").system(f"{editor} {writeup_path}")
-
     typer.echo(f"Created: {writeup_path}")
+
+@app.command()
+def list():
+    """List all writeups!"""
+    from flagged.writeup import list_all
+    from flagged.display import render_table
+
+    vault = find_vault_root()
+
+    if vault is None:
+        typer.echo("Err: No vault found, Run flagged init first")
+        raise typer.Exit(1)
+
+    writeups = list_all(vault)
+    render_table(writeups)
+
