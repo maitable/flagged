@@ -1,6 +1,7 @@
 import typer
 from pathlib import Path
 from flagged.vault import find_vault_root
+import subprocess
 
 app = typer.Typer(help="Flagged", no_args_is_help=True)
 
@@ -102,6 +103,7 @@ def show(slug: str):
 
 @app.command()
 def edit(slug: str):
+    """Edit a writeup using environment variable EDITOR"""
     from flagged.writeup import resolve_slug
     import os
     vault = find_vault_root()
@@ -118,3 +120,13 @@ def edit(slug: str):
 
     editor = os.environ.get("EDITOR", "micro")
     os.system(f"{editor} {fp}")
+
+@app.command()
+def search(query:str):
+    """Search a query across all writeups"""
+    vault = find_vault_root()
+    if vault is None:
+        typer.echo("Err: No vault found, Run flagged init first")
+        raise typer.Exit(1)
+    fp = Path(vault)
+    subprocess.run(["grep", "-r", query, str(vault)])
