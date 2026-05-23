@@ -1,5 +1,6 @@
 import typer
 from pathlib import Path
+from flagged.vault import find_vault_root
 
 app = typer.Typer(help="Flagged", no_args_is_help=True)
 
@@ -19,5 +20,45 @@ def init():
 
 @app.command()
 def new():
-    """Meow"""
-    typer.echo("TODO")
+    """Create a new write-up"""
+    ctf = typer.prompt("CTF Name")
+    name = typer.prompt("Challenge")
+    category = typer.prompt("Category ((crypto/web/pwn/rev/misc/forensics/osint)")
+    points = typer.prompt("Points", default="0")
+    difficulty = typer.prompt("Diff (easy/medium/hard)")
+    tags = typer.prompt('Tags (comma-separated)', default="")
+
+    year = str(__import__("datetime").date.today().year)
+    ctf_slug = ctf.lower().replace(" ", "-")
+    name_slug = name.lower().replace(" ", "-")
+
+    vault = find_vault_root()
+    writeup_path = vault / year / ctf_slug / f"{name_slug}.md"
+    writeup_path.parent.mkdir(parents = True, exist_ok = True)
+
+    tags_list = [t.strip() for t in tags.split(",") if t.strip()]
+    template = f"""
+title: {name}
+ctf: {ctf}
+category: {category}
+date: {__import__("datetime").date.today()}
+solved: false
+flag: ""
+points: {points}
+difficulty: {difficulty}
+tags: {tags_list}
+---
+
+## Challenge
+
+## Solution
+
+## Flag
+"""
+
+    writeup_path.write_text(template)
+
+    editor = __import__("os").environ.get("EDITOR", "nano")
+    __import__("os").system(f"{editor} {writeup_path}")
+
+    typer.echo(f"Created: {writeup_path}")
