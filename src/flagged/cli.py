@@ -15,9 +15,6 @@ def init():
         raise typer.Exit(1)
     vault_file.touch()
     typer.echo(f"Complete vault init at {cwd}")
-
-    typer.echo("TODO")
-
 @app.command()
 def new():
     """Create a new write-up"""
@@ -89,7 +86,7 @@ def show(slug: str):
     if vault is None:
         typer.echo("Err: No vault found, Run flagged init first")
         raise typer.Exit(1)
-
+    print(vault)
     w = resolve_slug(vault, slug)
     if w is None:
         typer.echo(f"Err: No writeup matches {slug}")
@@ -101,3 +98,23 @@ def show(slug: str):
         title=w.title,
         subtitle = f"{w.ctf} - {w.category} - {w.points}pts"
     ))
+
+
+@app.command()
+def edit(slug: str):
+    from flagged.writeup import resolve_slug
+    import os
+    vault = find_vault_root()
+    if vault is None:
+        typer.echo("Err: No vault found, Run flagged init first")
+        raise typer.Exit(1)
+
+    w = resolve_slug(vault, slug)
+    if w is None:
+        typer.echo(f"Err: No writeup matches {w.slug}")
+        raise typer.Exit(1)
+
+    fp = w.path
+
+    editor = os.environ.get("EDITOR", "micro")
+    os.system(f"{editor} {fp}")
