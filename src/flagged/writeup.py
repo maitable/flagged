@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
 import frontmatter
+from difflib import get_close_matches
 
 @dataclass
 class Writeup:
@@ -58,4 +59,18 @@ def list_all(vault: Path) -> list[Writeup]:
             print(f"Skipping ctf {p.name} because missing needed fields")
     return sorted(writeups, key=lambda w: w.date, reverse=True) #date filter
 
+def resolve_slug(vault:Path, query:str) -> Writeup | None:
+    all_writeups = list_all(vault)
+    slugs = [w.slug for w in all_writeups]
+    slug_name = {w.slug:w for w in all_writeups}
+
+    for w in all_writeups:
+        if w.slug == query:
+            return w
+
+    matches = get_close_matches(query, slugs, n=1, cutoff=0.5)
+    if matches:
+        print(f"Matched {matches[0]}")
+        return slug_name[matches[0]]
+    return None
 

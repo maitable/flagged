@@ -77,3 +77,27 @@ def list():
     writeups = list_all(vault)
     render_table(writeups)
 
+@app.command()
+def show(slug: str):
+    """Show a writeup in the terminal"""
+    from flagged.writeup import resolve_slug
+    from rich.console import Console
+    from rich.panel import Panel
+    from rich.markdown import Markdown
+    
+    vault = find_vault_root()
+    if vault is None:
+        typer.echo("Err: No vault found, Run flagged init first")
+        raise typer.Exit(1)
+
+    w = resolve_slug(vault, slug)
+    if w is None:
+        typer.echo(f"Err: No writeup matches {slug}")
+        raise typer.Exit(1)
+
+    console = Console()
+    console.print(Panel(
+        Markdown(w.content),
+        title=w.title,
+        subtitle = f"{w.ctf} - {w.category} - {w.points}pts"
+    ))
