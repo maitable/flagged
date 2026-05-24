@@ -47,7 +47,7 @@ def save(writeup:Writeup) -> None:
     post = frontmatter.load(writeup.path)
     post['solved'] = writeup.solved
     post["flag"] = writeup.flag
-    with open(writeup.path, "wb") as f:
+    with open(writeup.path, "w") as f:
         frontmatter.dump(post, f)
 
 def list_all(vault: Path) -> list[Writeup]:

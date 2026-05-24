@@ -111,7 +111,7 @@ def edit(slug: str):
         typer.echo("Err: No vault found, Run flagged init first")
         raise typer.Exit(1)
 
-    w = resolve_slug(vault, slug)
+    w = resolv_slug(vault, slug)
     if w is None:
         typer.echo(f"Err: No writeup matches {w.slug}")
         raise typer.Exit(1)
@@ -130,3 +130,23 @@ def search(query:str):
         raise typer.Exit(1)
     fp = Path(vault)
     subprocess.run(["grep", "-r", query, str(vault)])
+
+@app.command()
+def flag(slug:str, flag:str):
+    from flagged.writeup import resolve_slug, save
+    #meow
+    """Set a ctf to solved + add its flag"""
+    vault = find_vault_root()
+    if vault is None:
+        typer.echo("Err: No vault found, Run flagged init first")
+        raise typer.Exit(1)
+    w = resolve_slug(vault, slug)
+    if w is None:
+        typer.echo(f"Err: No writeup matches {slug}")
+        raise typer.Exit(1)
+
+    fp = w.path
+    w.solved = True
+    w.flag = flag
+    save(w)
+    typer.echo(f"Flagged: {w.title} with flag {w.flag}")
