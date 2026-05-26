@@ -29,3 +29,29 @@ def render_table(writeups):
         )
 
     console.print(table)
+
+def render_stats(writeups):
+    if not writeups:
+        console.print("No writeups here")
+        return
+    total = len(writeups)
+    solved = sum(1 for w in writeups if w.solved)
+    rate = solved/total*100 if total >0 else 0
+   
+    from rich.table import Table
+
+    overview = Table(show_header=False, box=None, padding=(0, 3))
+    overview.add_column()
+    overview.add_column()
+    overview.add_column()
+    overview.add_column()
+
+    overview.add_row(
+        f"[bold]{total}[/bold]\n[dim]total[/dim]",
+        f"[bold]{solved}[/bold]\n[dim]solved[/dim]",
+        f"[bold]{sum(w.points for w in writeups if w.solved)}[/bold]\n[dim]points[/dim]",
+        f"[bold]{rate:.1f}%[/bold]\n[dim]solve rate[/dim]",
+    )
+
+    console.print(overview)
+    console.print()

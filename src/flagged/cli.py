@@ -115,7 +115,6 @@ def edit(slug: str):
     if w is None:
         typer.echo(f"Err: No writeup matches {w.slug}")
         raise typer.Exit(1)
-
     fp = w.path
 
     editor = os.environ.get("EDITOR", "micro")
@@ -150,3 +149,17 @@ def flag(slug:str, flag:str):
     w.flag = flag
     save(w)
     typer.echo(f"Flagged: {w.title} with flag {w.flag}")
+
+@app.command()
+def stats():
+    """Show vault stats"""
+    from flagged.writeup import list_all
+    from flagged.display import render_stats
+    vault = find_vault_root()
+    if vault is None:
+        typer.echo("Err: No vault found, Run flagged init first")
+        raise typer.Exit(1)
+    
+    writeups = list_all(vault)
+    render_stats(writeups)
+    
