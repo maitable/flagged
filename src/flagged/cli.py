@@ -120,7 +120,7 @@ def edit(slug: str):
     editor = os.environ.get("EDITOR", "micro")
     os.system(f"{editor} {fp}")
 
-@app.command()
+@app.command() 
 def search(query:str):
     """Search a query across all writeups"""
     vault = find_vault_root()
@@ -132,6 +132,7 @@ def search(query:str):
 
 @app.command()
 def flag(slug:str, flag:str):
+    """Mark writeup as solved and set a flag"""
     from flagged.writeup import resolve_slug, save
     #meow
     """Set a ctf to solved + add its flag"""
@@ -149,17 +150,3 @@ def flag(slug:str, flag:str):
     w.flag = flag
     save(w)
     typer.echo(f"Flagged: {w.title} with flag {w.flag}")
-
-@app.command()
-def stats():
-    """Show vault stats"""
-    from flagged.writeup import list_all
-    from flagged.display import render_stats
-    vault = find_vault_root()
-    if vault is None:
-        typer.echo("Err: No vault found, Run flagged init first")
-        raise typer.Exit(1)
-    
-    writeups = list_all(vault)
-    render_stats(writeups)
-    
