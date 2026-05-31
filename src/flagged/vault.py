@@ -19,7 +19,7 @@ def find_vault_root():
 def load_config():
     root = find_vault_root()
     if root is None:
-        return VaultConfig
+        return VaultConfig()
     with open(root / ".ctf.toml", "rb") as toml:
         toml_dict = tomllib.load(toml)
     return VaultConfig(
