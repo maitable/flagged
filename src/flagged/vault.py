@@ -28,12 +28,4 @@ def load_config():
         date_format=toml_dict.get("date_format", "%Y-%m-%d"),
     )
 
-def require_vault():
-    root = find_vault_root()
-    if root is None:
-        print("You need a vault! Run flagged init to create one")
-        raise SystemExit(1)
-
-    return root, load_config()
-
 

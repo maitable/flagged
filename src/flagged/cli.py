@@ -129,15 +129,12 @@ def search(query:str):
     if vault is None:
         typer.echo("Err: No vault found, Run flagged init first")
         raise typer.Exit(1)
-    fp = Path(vault)
     subprocess.run(["grep", "-r", query, str(vault)])
 
 @app.command()
 def flag(slug:str, flag:str):
     """Mark writeup as solved and set a flag"""
     from flagged.writeup import resolve_slug, save
-    #meow
-    """Set a ctf to solved + add its flag"""
     vault = find_vault_root()
     if vault is None:
         typer.echo("Err: No vault found, Run flagged init first")

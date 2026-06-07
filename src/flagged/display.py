@@ -38,8 +38,6 @@ def render_stats(writeups):
     solved = sum(1 for w in writeups if w.solved)
     rate = solved/total*100 if total >0 else 0
    
-    from rich.table import Table
-
     overview = Table(show_header=False, box=None, padding=(0, 3))
     overview.add_column()
     overview.add_column()
